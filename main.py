@@ -4,11 +4,12 @@ import yeelight
 import time
 
 bulb = yeelight.Bulb("192.168.11.4")
-bulb.turn_off()
-bulb.set_rgb(255, 255, 255)
 bulb.turn_on()
+bulb.set_rgb(255, 255, 255)
+bulb.set_brightness(100)
 cap = cv2.VideoCapture(1)
 sums =0
+bulb.set_rgb(0, 0, 255)
 while True:
     ret, frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
@@ -25,7 +26,8 @@ while True:
             if sum != sums:
                 bulb = yeelight.Bulb("192.168.11.4")
                 if sum == 1:
-                    bulb.set_rgb(255, 217, 0)
+                    time.sleep(0.3)
+                    bulb.set_rgb(255, 255, 0)
                 if sum == 2:
                     bulb.set_rgb(255, 0, 0)
                     bulb.turn_on()
@@ -52,7 +54,6 @@ while True:
         if sum != sums:
                 bulb = yeelight.Bulb("192.168.11.4")
                 bulb.set_rgb(0, 0, 255)
-                print("値が変更されました",sum)
         cv2.putText(frame, 'waiting', (50, 70), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (255, 255, 255), thickness=5)
         cv2.putText(frame, '0', (150, 140), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (255, 255, 255), thickness=5)
         sums = 0
@@ -61,6 +62,7 @@ while True:
     cv2.imshow('preview', frame) 
     key = cv2.waitKey(10)
     if key == ord("q"):
+        bulb.turn_off()
         break
 
 cv2.destroyAllWindows()
